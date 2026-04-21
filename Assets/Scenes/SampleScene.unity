@@ -205,8 +205,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 330585543}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.70880765, y: -0.0016952655, z: 0.0017030133, w: -0.7053977}
-  m_LocalPosition: {x: -0.124240614, y: 2.8523085, z: 0.043112908}
+  m_LocalRotation: {x: 0.21085814, y: 0.3599801, z: -0.08381787, w: 0.90494627}
+  m_LocalPosition: {x: -0.6734326, y: 0.37196282, z: -0.72088426}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -415,6 +415,8 @@ MonoBehaviour:
   instanceMesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
   material: {fileID: 2100000, guid: c2427408b9243294ca1d9a68426afb96, type: 2}
   resolution: 16
+  seed: 0
+  verticalOffset: 1
 --- !u!4 &704283655
 Transform:
   m_ObjectHideFlags: 0

@@ -1,3 +1,4 @@
+using System;
 using Unity.Burst;
 using Unity.Collections;
 using Unity.Jobs;
@@ -17,12 +18,17 @@ public class HashVisualization : MonoBehaviour {
 		public int resolution;
 
 		public float invResolution;
+
+		public SmallXXHash hash;
         
 		public void Execute(int i) {
-			float v = floor(invResolution * i + 0.00001f);
-			float u = i - resolution * v;
+			int v = (int)floor(invResolution * i + 0.00001f);
+			int u = i - resolution * v - resolution / 2;
+			v -= resolution / 2; // To demonstrate that the has function also works for negative coordinates
+
+			hashes[i] = hash.Eat(u).Eat(v);
 			// Pass u and v in order to have the pattern independent of the resolution
-			hashes[i] = (uint)(frac(u * v * 0.381f) * 256f); // Weyl sequence as in Organic Variety fractal tutorial
+			// hashes[i] = (uint)(frac(u * v * 0.381f) * 256f); // Weyl sequence as in Organic Variety fractal tutorial
 		}
 	}
 
@@ -45,6 +51,11 @@ public class HashVisualization : MonoBehaviour {
 
 	private MaterialPropertyBlock propertyBlock;
 
+	[SerializeField]
+	private int seed;
+
+	[SerializeField, Range(-2f, 2f)]
+	float verticalOffset = 1f;
 	
 
     void OnEnable () {
@@ -55,14 +66,17 @@ public class HashVisualization : MonoBehaviour {
 		new HashJob {
 			hashes = hashes,
 			resolution = resolution,
-			invResolution = 1f / resolution
+			invResolution = 1f / resolution,
+			hash = SmallXXHash.Seed(seed)
 		}.ScheduleParallel(hashes.Length, resolution, default).Complete();
 
 		hashesBuffer.SetData(hashes);
 
 		propertyBlock ??= new MaterialPropertyBlock();
 		propertyBlock.SetBuffer(hashesId, hashesBuffer);
-		propertyBlock.SetVector(configId, new Vector4(resolution, 1f / resolution));
+		propertyBlock.SetVector(configId, new Vector4(
+			resolution, 1f / resolution, verticalOffset / resolution
+		));
 	}
 
     void OnDisable () {

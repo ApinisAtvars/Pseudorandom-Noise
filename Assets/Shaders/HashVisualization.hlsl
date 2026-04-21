@@ -20,7 +20,7 @@ void ConfigureProcedural () {
 		unity_ObjectToWorld = 0.0;
 		unity_ObjectToWorld._m03_m13_m23_m33 = float4(
 			_Config.y * (u + 0.5) - 0.5,
-			0.0,
+			_Config.z * ((1.0 / 255.0) * (_Hashes[unity_InstanceID] >> 24) - 0.5),
 			_Config.y * (v + 0.5) - 0.5,
 			1.0
 		);
@@ -33,7 +33,14 @@ void ConfigureProcedural () {
 float3 GetHashColor () {
 	#if defined(UNITY_PROCEDURAL_INSTANCING_ENABLED)
 		uint hash = _Hashes[unity_InstanceID];
-		return (1.0 / 255.0) * (hash & 255); // Make pattern repeat every 255 blocks
+		// return (1.0 / 255.0) * (hash & 255); // Make pattern repeat every 255 blocks
+		// return (1.0 / 255.0) * ((hash >> 8) & 255) // You can view a different part of the hash by shifting it around
+		
+		return (1.0 / 255.0) * float3( // Adding color
+			hash & 255, 		// lowest byte for red
+			(hash >> 8) & 255, 	// second lowest for green
+			(hash >> 16) & 255 	// third lowest for blue
+		);
 	#else
 		return 1.0;
 	#endif
